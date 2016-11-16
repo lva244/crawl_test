@@ -3,6 +3,7 @@ from eventlet.green import urllib2
 from lxml import etree
 from lxml.etree import tostring
 from lxml.html.soupparser import fromstring
+import os
 
 url = "http://sodt.mobi/"
 
@@ -11,8 +12,8 @@ current_stop = 0
 current_start = 0
 current_header_index = 0
 
-max_stop = 282475250
-#max_stop = 21
+#max_stop = 10000000
+max_stop = 91
 
 def fetch(url):
 	print("fetching", url)
@@ -23,7 +24,8 @@ def fetch(url):
 		print("Error")
 	return response
 
-fo = open("test.txt", "wb")
+#fo = open("test.txt", "wb")
+fd = os.open("test.txt", os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
 
 while current_header_index < len(header_vina_2):
 
@@ -55,7 +57,7 @@ while current_header_index < len(header_vina_2):
 			    	else:
 			    		total = name[0] + "|" + "None" + "|" + mobile_number[0].text
 
-			    	fo.write((total+"\r\n").encode(encoding='UTF-8'))
+			    	os.write(fd, (total+"\r\n").encode(encoding='UTF-8'))
 
 			    	print((total+"\r\n").encode(encoding='UTF-8'))
 			except Exception:
@@ -68,5 +70,5 @@ while current_header_index < len(header_vina_2):
 	
 	current_header_index = current_header_index + 1	    	
 
-fo.close()
+os.close(fd)
 
